@@ -15,13 +15,18 @@ func NewDeleteServiceInstanceCmd(siFactory ServiceInstanceFactory, ui boshui.UI)
 }
 
 func (c DeleteServiceInstanceCmd) Run(opts DeleteServiceInstanceOpts) error {
-	si := c.siFactory.New(ServiceInstanceFinder{
-		Name:            opts.Args.Name,
-		ServiceName:     opts.Args.ServiceName,
-		ServicePlanName: opts.Args.ServicePlanName,
-	})
+	finder := ServiceInstanceFinder{
+		ID:            opts.Args.ID,
+		ServiceID:     opts.ServiceID,
+		ServicePlanID: opts.ServicePlanID,
+	}
 
-	err := si.Deprovision()
+	si, err := c.siFactory.New(finder)
+	if err != nil {
+		return err
+	}
+
+	err = si.Deprovision()
 	if err != nil {
 		return bosherr.WrapError(err, "Deprovisioning instance")
 	}

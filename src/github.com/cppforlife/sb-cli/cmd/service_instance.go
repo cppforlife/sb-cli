@@ -9,26 +9,6 @@ import (
 	osb "github.com/pmorie/go-open-service-broker-client/v2"
 )
 
-type ServiceInstanceFinder struct {
-	Name            string
-	ServiceName     string
-	ServicePlanName string
-}
-
-type ServiceInstanceFactory struct {
-	client osb.Client
-	clock  clock.Clock
-	ui     boshui.UI
-}
-
-func NewServiceInstanceFactory(client osb.Client, clock clock.Clock, ui boshui.UI) ServiceInstanceFactory {
-	return ServiceInstanceFactory{client, clock, ui}
-}
-
-func (f ServiceInstanceFactory) New(id ServiceInstanceFinder) *ServiceInstance {
-	return &ServiceInstance{id, f.client, f.clock, f.ui, ""}
-}
-
 type ServiceInstance struct {
 	id ServiceInstanceFinder
 
@@ -39,16 +19,16 @@ type ServiceInstance struct {
 	dashboardURL string
 }
 
-func (c ServiceInstance) Name() string            { return c.id.Name }
-func (c ServiceInstance) ServiceName() string     { return c.id.ServiceName }
-func (c ServiceInstance) ServicePlanName() string { return c.id.ServicePlanName }
-func (c ServiceInstance) DashboardURL() string    { return c.dashboardURL }
+func (c ServiceInstance) ID() string            { return c.id.ID }
+func (c ServiceInstance) ServiceID() string     { return c.id.ServiceID }
+func (c ServiceInstance) ServicePlanID() string { return c.id.ServicePlanID }
+func (c ServiceInstance) DashboardURL() string  { return c.dashboardURL }
 
 func (c *ServiceInstance) Provision(params map[string]interface{}) error {
 	req := &osb.ProvisionRequest{
-		InstanceID: c.id.Name,
-		ServiceID:  c.id.ServiceName,
-		PlanID:     c.id.ServicePlanName,
+		InstanceID: c.id.ID,
+		ServiceID:  c.id.ServiceID,
+		PlanID:     c.id.ServicePlanID,
 
 		AcceptsIncomplete: true,
 
@@ -86,9 +66,9 @@ func (c *ServiceInstance) Provision(params map[string]interface{}) error {
 
 func (c ServiceInstance) Deprovision() error {
 	req := &osb.DeprovisionRequest{
-		InstanceID: c.id.Name,
-		ServiceID:  c.id.ServiceName,
-		PlanID:     c.id.ServicePlanName,
+		InstanceID: c.id.ID,
+		ServiceID:  c.id.ServiceID,
+		PlanID:     c.id.ServicePlanID,
 
 		AcceptsIncomplete: true,
 	}

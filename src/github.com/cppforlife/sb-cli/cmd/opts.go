@@ -18,15 +18,21 @@ type SBOpts struct {
 	Password string               `long:"broker-password" value-name:"PASSWORD" description:"Broker password"                     env:"SB_BROKER_PASSWORD"`
 	CACert   boshcmd.FileBytesArg `long:"broker-ca-cert"  value-name:"PATH"     description:"Path to a file with CA certificates" env:"SB_BROKER_CA_CERT"`
 
-	ServiceInstances      ServiceInstancesOpts      `command:"service-instances" description:"List service instances"`
-	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" description:"Create service instance"`
-	DeleteServiceInstance DeleteServiceInstanceOpts `command:"delete-service-instance" description:"Delete service instance"`
+	Services ServicesOpts `command:"services" alias:"ss" description:"List services"`
 
-	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding"  description:""`
-	DeleteServiceBinding DeleteServiceBindingOpts `command:"delete-service-binding"  description:""`
+	ServiceInstances      ServiceInstancesOpts      `command:"service-instances"       alias:"sis" description:"List service instances"`
+	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" alias:"cis" description:"Create service instance"`
+	DeleteServiceInstance DeleteServiceInstanceOpts `command:"delete-service-instance" alias:"dis" description:"Delete service instance"`
+
+	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding" alias:"csb" description:""`
+	DeleteServiceBinding DeleteServiceBindingOpts `command:"delete-service-binding" alias:"dsb" description:""`
 }
 
 type HelpOpts struct {
+	cmd
+}
+
+type ServicesOpts struct {
 	cmd
 }
 
@@ -35,26 +41,30 @@ type ServiceInstancesOpts struct {
 }
 
 type CreateServiceInstanceOpts struct {
-	Args   CreateServiceInstanceArgs `positional-args:"true" required:"true"`
-	Params boshcmd.FileBytesArg      `long:"params" value-name:"PATH" description:"Path to a file with options"`
+	Args CreateServiceInstanceArgs `positional-args:"true" required:"true"`
+
+	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
+	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
+
+	Params boshcmd.FileBytesArg `long:"params" value-name:"PATH" description:"Path to a file with options"`
 	cmd
 }
 
 type CreateServiceInstanceArgs struct {
-	Name            string `positional-arg-name:"NAME"    description:"Service instance name"`
-	ServiceName     string `positional-arg-name:"SERVICE" description:"Service name"` // todo detect if sb only has one?
-	ServicePlanName string `positional-arg-name:"PLAN"    description:"Service plan name"`
+	ID string `positional-arg-name:"ID" description:"Service instance ID"`
 }
 
 type DeleteServiceInstanceOpts struct {
 	Args DeleteServiceInstanceArgs `positional-args:"true" required:"true"`
+
+	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
+	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
+
 	cmd
 }
 
 type DeleteServiceInstanceArgs struct {
-	Name            string `positional-arg-name:"NAME"    description:"Service instance name"`
-	ServiceName     string `positional-arg-name:"SERVICE" description:"Service name"` // todo detect if sb only has one?
-	ServicePlanName string `positional-arg-name:"PLAN"    description:"Service plan name"`
+	ID string `positional-arg-name:"ID" description:"Service instance ID"`
 }
 
 type CreateServiceBindingOpts struct {

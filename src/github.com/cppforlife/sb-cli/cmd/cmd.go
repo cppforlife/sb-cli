@@ -37,9 +37,14 @@ func (c Cmd) Execute() (cmdErr error) {
 	c.configureFS()
 
 	deps := c.deps
-	siFactory := NewServiceInstanceFactory(c.osbClient(), deps.Time, deps.UI)
+	client := c.osbClient()
+	catalog := Catalog{client}
+	siFactory := NewServiceInstanceFactory(client, catalog, deps.Time, deps.UI)
 
 	switch opts := c.Opts.(type) {
+	case *ServicesOpts:
+		return NewServicesCmd(catalog, deps.UI).Run()
+
 	case *ServiceInstancesOpts:
 		return NewServiceInstancesCmd(siFactory, deps.UI).Run()
 
