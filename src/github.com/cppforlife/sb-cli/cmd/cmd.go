@@ -55,10 +55,10 @@ func (c Cmd) Execute() (cmdErr error) {
 		return NewDeleteServiceInstanceCmd(siFactory, deps.UI).Run(*opts)
 
 	case *CreateServiceBindingOpts:
-		return fmt.Errorf("Not implemented yet")
+		return NewCreateServiceBindingCmd(siFactory, deps.UUIDGen, deps.UI).Run(*opts)
 
 	case *DeleteServiceBindingOpts:
-		return fmt.Errorf("Not implemented yet")
+		return NewDeleteServiceBindingCmd(siFactory).Run(*opts)
 
 	case *MessageOpts:
 		deps.UI.PrintBlock(opts.Message)

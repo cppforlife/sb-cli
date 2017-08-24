@@ -24,8 +24,8 @@ type SBOpts struct {
 	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" alias:"cis" description:"Create service instance"`
 	DeleteServiceInstance DeleteServiceInstanceOpts `command:"delete-service-instance" alias:"dis" description:"Delete service instance"`
 
-	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding" alias:"csb" description:""`
-	DeleteServiceBinding DeleteServiceBindingOpts `command:"delete-service-binding" alias:"dsb" description:""`
+	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding" alias:"csb" description:"Create service binding"`
+	DeleteServiceBinding DeleteServiceBindingOpts `command:"delete-service-binding" alias:"dsb" description:"Delete service binding"`
 }
 
 type HelpOpts struct {
@@ -46,12 +46,13 @@ type CreateServiceInstanceOpts struct {
 	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
 	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
 
-	Params boshcmd.FileBytesArg `long:"params" value-name:"PATH" description:"Path to a file with options"`
+	Params boshcmd.FileBytesArg `long:"params" value-name:"PATH" description:"Path to a YAML file with params"`
+
 	cmd
 }
 
 type CreateServiceInstanceArgs struct {
-	ID string `positional-arg-name:"ID" description:"Service instance ID"`
+	ID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
 }
 
 type DeleteServiceInstanceOpts struct {
@@ -64,15 +65,39 @@ type DeleteServiceInstanceOpts struct {
 }
 
 type DeleteServiceInstanceArgs struct {
-	ID string `positional-arg-name:"ID" description:"Service instance ID"`
+	ID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
 }
 
 type CreateServiceBindingOpts struct {
+	Args CreateServiceBindingArgs `positional-args:"true" required:"true"`
+
+	ID string `long:"id" value-name:"SERVICE-BINDING-ID" description:"Service binding ID (automatically generated if not provided)"`
+
+	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
+	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
+
+	Resource boshcmd.FileBytesArg `long:"resource" value-name:"PATH" description:"Path to a YAML file with resource definition"`
+	Params   boshcmd.FileBytesArg `long:"params"   value-name:"PATH" description:"Path to a YAML file with params"`
+
 	cmd
 }
 
+type CreateServiceBindingArgs struct {
+	ServiceInstanceID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
+}
+
 type DeleteServiceBindingOpts struct {
+	Args DeleteServiceBindingArgs `positional-args:"true" required:"true"`
+
+	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
+	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
+
 	cmd
+}
+
+type DeleteServiceBindingArgs struct {
+	ID                string `positional-arg-name:"SERVICE-BINDING-ID"  description:"Service binding ID"`
+	ServiceInstanceID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
 }
 
 // MessageOpts is used for version and help flags

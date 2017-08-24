@@ -22,7 +22,7 @@ func (c CreateServiceInstanceCmd) Run(opts CreateServiceInstanceOpts) error {
 	if len(opts.Params.Bytes) > 0 {
 		err := yaml.Unmarshal(opts.Params.Bytes, params)
 		if err != nil {
-			return bosherr.WrapError(err, "Unmarshaling instance params")
+			return bosherr.WrapError(err, "Unmarshaling service instance params")
 		}
 	}
 
@@ -39,7 +39,7 @@ func (c CreateServiceInstanceCmd) Run(opts CreateServiceInstanceOpts) error {
 
 	err = si.Provision(params)
 	if err != nil {
-		return bosherr.WrapError(err, "Provisioning instance")
+		return bosherr.WrapError(err, "Provisioning service instance")
 	}
 
 	info := boshtbl.Table{

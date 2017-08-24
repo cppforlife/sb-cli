@@ -18,9 +18,8 @@ $ out/sb-cli delete-service-instance test1 service1 plan1
 
 ## Todo
 
-- list service and plans
+- generate id for service instances if not provided
 - better auth errors
-- auto detect service and plan if only one
 - uaa auth
 - list instances
 - set context during create
