@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	osb "github.com/pmorie/go-open-service-broker-client/v2"
@@ -84,10 +85,23 @@ func (c Cmd) configureUI() {
 }
 
 func (c Cmd) osbClient() osb.Client {
+	if len(c.SBOpts.URL) == 0 {
+		c.panicIfErr(errors.New("Expected service broker URL"))
+	}
+
+	if len(c.SBOpts.Username) == 0 {
+		c.panicIfErr(errors.New("Expected service broker username"))
+	}
+
+	if len(c.SBOpts.Password) == 0 {
+		c.panicIfErr(errors.New("Expected service broker password"))
+	}
+
 	config := osb.DefaultClientConfiguration()
 	config.URL = c.SBOpts.URL
 	config.CAData = c.SBOpts.CACert.Bytes
 	config.Insecure = false
+	config.TimeoutSeconds = 30
 
 	config.AuthConfig = &osb.AuthConfig{
 		BasicAuthConfig: &osb.BasicAuthConfig{
@@ -98,6 +112,11 @@ func (c Cmd) osbClient() osb.Client {
 
 	client, err := osb.NewClient(config)
 	c.panicIfErr(err)
+
+	if len(config.URL) > 0 {
+		c.deps.UI.PrintLinef("Using service broker '%s' as user '%s'",
+			config.URL, config.AuthConfig.BasicAuthConfig.Username)
+	}
 
 	return client
 }
