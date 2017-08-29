@@ -78,6 +78,7 @@ func (c CreateServiceBindingCmd) Run(opts CreateServiceBindingOpts) error {
 			{
 				boshtbl.NewValueString(sb.ID()),
 				boshtbl.NewValueString(sb.ServiceInstance().ID()),
+				boshtbl.NewValueInterface(sb.Credentials()),
 				boshtbl.NewValueString(sb.SyslogDrainURL()),
 				boshtbl.NewValueString(sb.RouteServiceURL()),
 				boshtbl.NewValueInterface(sb.VolumeMounts()),
