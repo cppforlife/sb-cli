@@ -21,8 +21,8 @@ type SBOpts struct {
 	Services ServicesOpts `command:"services" alias:"ss" description:"List services"`
 
 	ServiceInstances      ServiceInstancesOpts      `command:"service-instances"       alias:"sis" description:"List service instances"`
-	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" alias:"cis" description:"Create service instance"`
-	DeleteServiceInstance DeleteServiceInstanceOpts `command:"delete-service-instance" alias:"dis" description:"Delete service instance"`
+	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" alias:"csi" description:"Create service instance"`
+	DeleteServiceInstance DeleteServiceInstanceOpts `command:"delete-service-instance" alias:"dsi" description:"Delete service instance"`
 
 	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding" alias:"csb" description:"Create service binding"`
 	DeleteServiceBinding DeleteServiceBindingOpts `command:"delete-service-binding" alias:"dsb" description:"Delete service binding"`
