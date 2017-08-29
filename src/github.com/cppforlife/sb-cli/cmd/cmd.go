@@ -101,7 +101,7 @@ func (c Cmd) osbClient() osb.Client {
 	config.URL = c.SBOpts.URL
 	config.CAData = c.SBOpts.CACert.Bytes
 	config.Insecure = false
-	config.TimeoutSeconds = 30
+	config.TimeoutSeconds = int(c.SBOpts.Timeout) / 1000000000
 
 	config.AuthConfig = &osb.AuthConfig{
 		BasicAuthConfig: &osb.BasicAuthConfig{

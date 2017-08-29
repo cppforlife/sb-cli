@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	boshcmd "github.com/cloudfoundry/bosh-cli/cmd"
 )
 
@@ -17,6 +19,7 @@ type SBOpts struct {
 	Username string               `long:"broker-username" value-name:"USERNAME" description:"Broker username"                     env:"SB_BROKER_USERNAME"`
 	Password string               `long:"broker-password" value-name:"PASSWORD" description:"Broker password"                     env:"SB_BROKER_PASSWORD"`
 	CACert   boshcmd.FileBytesArg `long:"broker-ca-cert"  value-name:"PATH"     description:"Path to a file with CA certificates" env:"SB_BROKER_CA_CERT"`
+	Timeout  time.Duration        `long:"broker-timeout"  value-name:"DURATION" description:"Timeout for individual HTTP requests" default:"30s"`
 
 	Services ServicesOpts `command:"services" alias:"ss" description:"List services"`
 
@@ -79,6 +82,8 @@ type CreateServiceBindingOpts struct {
 	Resource boshcmd.FileBytesArg `long:"resource" value-name:"PATH" description:"Path to a YAML file with resource definition"`
 	Params   boshcmd.FileBytesArg `long:"params"   value-name:"PATH" description:"Path to a YAML file with params"`
 
+	Timeout time.Duration `long:"timeout" value-name:"DURATION" description:"Timeout for binding operation" default:"90s"`
+
 	cmd
 }
 
@@ -91,6 +96,8 @@ type DeleteServiceBindingOpts struct {
 
 	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
 	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
+
+	Timeout time.Duration `long:"timeout" value-name:"DURATION" description:"Timeout for unbinding operation" default:"90s"`
 
 	cmd
 }

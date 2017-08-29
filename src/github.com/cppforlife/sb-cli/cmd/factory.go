@@ -33,6 +33,14 @@ func (f Factory) New(args []string) (Cmd, error) {
 	parser := goflags.NewParser(boshOpts, goflags.HelpFlag|goflags.PassDoubleDash)
 
 	parser.CommandHandler = func(command goflags.Commander, extraArgs []string) error {
+		if opts, ok := command.(*CreateServiceBindingOpts); ok {
+			boshOpts.Timeout = opts.Timeout
+		}
+
+		if opts, ok := command.(*DeleteServiceBindingOpts); ok {
+			boshOpts.Timeout = opts.Timeout
+		}
+
 		if len(extraArgs) > 0 {
 			errMsg := "Command '%T' does not support extra arguments: %s"
 			return fmt.Errorf(errMsg, command, strings.Join(extraArgs, ", "))
