@@ -4,7 +4,6 @@ import (
 	boshui "github.com/cloudfoundry/bosh-cli/ui"
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	"gopkg.in/yaml.v2"
 )
 
 type CreateServiceInstanceCmd struct {
@@ -17,13 +16,9 @@ func NewCreateServiceInstanceCmd(siFactory ServiceInstanceFactory, ui boshui.UI)
 }
 
 func (c CreateServiceInstanceCmd) Run(opts CreateServiceInstanceOpts) error {
-	var params map[string]interface{}
-
-	if len(opts.Params.Bytes) > 0 {
-		err := yaml.Unmarshal(opts.Params.Bytes, params)
-		if err != nil {
-			return bosherr.WrapError(err, "Unmarshaling service instance params")
-		}
+	params, err := opts.ParamFlags.AsParams()
+	if err != nil {
+		return err
 	}
 
 	finder := ServiceInstanceFinder{

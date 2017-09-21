@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"code.cloudfoundry.org/clock"
@@ -52,6 +53,40 @@ func (c *ServiceInstance) Provision(params map[string]interface{}) error {
 			InstanceID:   req.InstanceID,
 			ServiceID:    &req.ServiceID,
 			PlanID:       &req.PlanID,
+			OperationKey: resp.OperationKey,
+		}
+
+		err := c.waitForCompletion(opReq, false)
+		if err != nil {
+			return bosherr.WrapError(err, "Polling instance")
+		}
+	}
+
+	return nil
+}
+
+func (c *ServiceInstance) Update(params map[string]interface{}) error {
+	req := &osb.UpdateInstanceRequest{
+		InstanceID: c.id.ID,
+		ServiceID:  c.id.ServiceID,
+		PlanID:     &c.id.ServicePlanID,
+
+		AcceptsIncomplete: true,
+
+		Parameters: params,
+	}
+	fmt.Printf("%#v\n", req)
+
+	resp, err := c.client.UpdateInstance(req)
+	if err != nil {
+		return bosherr.WrapError(err, "Updating instance")
+	}
+
+	if resp.Async {
+		opReq := &osb.LastOperationRequest{
+			InstanceID:   req.InstanceID,
+			ServiceID:    &req.ServiceID,
+			PlanID:       req.PlanID,
 			OperationKey: resp.OperationKey,
 		}
 

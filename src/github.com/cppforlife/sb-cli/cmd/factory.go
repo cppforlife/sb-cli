@@ -3,7 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"reflect"
+	// "reflect"
 	"strings"
 
 	// Should only be imported here to avoid leaking use of goflags through project
@@ -22,6 +22,9 @@ func (f Factory) New(args []string) (Cmd, error) {
 	var cmdOpts interface{}
 
 	boshOpts := &SBOpts{}
+	boshOpts.CreateServiceInstance.ParamFlags.ParamsFile.FS = f.deps.FS
+	boshOpts.CreateServiceBinding.ParamFlags.ParamsFile.FS = f.deps.FS
+	boshOpts.CreateServiceBinding.Resource.FS = f.deps.FS
 
 	boshOpts.VersionOpt = func() error {
 		return &goflags.Error{
@@ -52,13 +55,13 @@ func (f Factory) New(args []string) (Cmd, error) {
 	}
 
 	goflags.FactoryFunc = func(val interface{}) {
-		stype := reflect.Indirect(reflect.ValueOf(val))
-		if stype.Kind() == reflect.Struct {
-			field := stype.FieldByName("FS")
-			if field.IsValid() {
-				field.Set(reflect.ValueOf(f.deps.FS))
-			}
-		}
+		// stype := reflect.Indirect(reflect.ValueOf(val))
+		// if stype.Kind() == reflect.Struct {
+		// 	field := stype.FieldByName("FS")
+		// 	if field.IsValid() {
+		// 		field.Set(reflect.ValueOf(f.deps.FS))
+		// 	}
+		// }
 	}
 
 	helpText := bytes.NewBufferString("")

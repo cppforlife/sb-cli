@@ -2,8 +2,7 @@ package cmd
 
 import (
 	"time"
-
-	boshcmd "github.com/cloudfoundry/bosh-cli/cmd"
+	// boshcmd "github.com/cloudfoundry/bosh-cli/cmd"
 )
 
 type SBOpts struct {
@@ -15,16 +14,17 @@ type SBOpts struct {
 
 	Help HelpOpts `command:"help" description:"Show this help message"`
 
-	URL      string               `long:"broker-url"      value-name:"URL"      description:"Broker URL"                          env:"SB_BROKER_URL"`
-	Username string               `long:"broker-username" value-name:"USERNAME" description:"Broker username"                     env:"SB_BROKER_USERNAME"`
-	Password string               `long:"broker-password" value-name:"PASSWORD" description:"Broker password"                     env:"SB_BROKER_PASSWORD"`
-	CACert   boshcmd.FileBytesArg `long:"broker-ca-cert"  value-name:"PATH"     description:"Path to a file with CA certificates" env:"SB_BROKER_CA_CERT"`
-	Timeout  time.Duration        `long:"broker-timeout"  value-name:"DURATION" description:"Timeout for individual HTTP requests" default:"30s"`
+	URL      string        `long:"broker-url"      value-name:"URL"      description:"Broker URL"                          env:"SB_BROKER_URL"`
+	Username string        `long:"broker-username" value-name:"USERNAME" description:"Broker username"                     env:"SB_BROKER_USERNAME"`
+	Password string        `long:"broker-password" value-name:"PASSWORD" description:"Broker password"                     env:"SB_BROKER_PASSWORD"`
+	CACert   FileBytesArg  `long:"broker-ca-cert"  value-name:"PATH"     description:"Path to a file with CA certificates" env:"SB_BROKER_CA_CERT"`
+	Timeout  time.Duration `long:"broker-timeout"  value-name:"DURATION" description:"Timeout for individual HTTP requests" default:"30s"`
 
 	Services ServicesOpts `command:"services" alias:"ss" description:"List services"`
 
 	ServiceInstances      ServiceInstancesOpts      `command:"service-instances"       alias:"sis" description:"List service instances"`
 	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" alias:"csi" description:"Create service instance"`
+	UpdateServiceInstance UpdateServiceInstanceOpts `command:"update-service-instance" alias:"usi" description:"Update service instance"`
 	DeleteServiceInstance DeleteServiceInstanceOpts `command:"delete-service-instance" alias:"dsi" description:"Delete service instance"`
 
 	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding" alias:"csb" description:"Create service binding"`
@@ -49,12 +49,27 @@ type CreateServiceInstanceOpts struct {
 	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
 	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
 
-	Params boshcmd.FileBytesArg `long:"params" value-name:"PATH" description:"Path to a YAML file with params"`
+	ParamFlags
 
 	cmd
 }
 
 type CreateServiceInstanceArgs struct {
+	ID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
+}
+
+type UpdateServiceInstanceOpts struct {
+	Args UpdateServiceInstanceArgs `positional-args:"true" required:"true"`
+
+	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
+	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
+
+	ParamFlags
+
+	cmd
+}
+
+type UpdateServiceInstanceArgs struct {
 	ID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
 }
 
@@ -79,8 +94,9 @@ type CreateServiceBindingOpts struct {
 	ServiceID     string `long:"service"      value-name:"SERVICE-ID" description:"Service ID"`
 	ServicePlanID string `long:"service-plan" value-name:"PLAN-ID"    description:"Service plan ID"`
 
-	Resource boshcmd.FileBytesArg `long:"resource" value-name:"PATH" description:"Path to a YAML file with resource definition"`
-	Params   boshcmd.FileBytesArg `long:"params"   value-name:"PATH" description:"Path to a YAML file with params"`
+	Resource FileBytesArg `long:"resource" value-name:"PATH" description:"Path to a YAML file with resource definition"`
+
+	ParamFlags
 
 	Timeout time.Duration `long:"timeout" value-name:"DURATION" description:"Timeout for binding operation" default:"90s"`
 

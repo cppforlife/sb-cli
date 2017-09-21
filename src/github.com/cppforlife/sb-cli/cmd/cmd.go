@@ -38,7 +38,10 @@ func (c Cmd) Execute() (cmdErr error) {
 	c.configureFS()
 
 	deps := c.deps
-	client := c.osbClient()
+	var client osb.Client
+	if _, ok := c.Opts.(*MessageOpts); !ok {
+		client = c.osbClient()
+	}
 	catalog := Catalog{client}
 	siFactory := NewServiceInstanceFactory(client, catalog, deps.Time, deps.UI)
 
@@ -51,6 +54,9 @@ func (c Cmd) Execute() (cmdErr error) {
 
 	case *CreateServiceInstanceOpts:
 		return NewCreateServiceInstanceCmd(siFactory, deps.UI).Run(*opts)
+
+	case *UpdateServiceInstanceOpts:
+		return NewUpdateServiceInstanceCmd(siFactory).Run(*opts)
 
 	case *DeleteServiceInstanceOpts:
 		return NewDeleteServiceInstanceCmd(siFactory, deps.UI).Run(*opts)

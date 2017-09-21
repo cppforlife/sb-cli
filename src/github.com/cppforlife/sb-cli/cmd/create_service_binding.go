@@ -29,13 +29,9 @@ func (c CreateServiceBindingCmd) Run(opts CreateServiceBindingOpts) error {
 		}
 	}
 
-	var params map[string]interface{}
-
-	if len(opts.Params.Bytes) > 0 {
-		err := yaml.Unmarshal(opts.Params.Bytes, params)
-		if err != nil {
-			return bosherr.WrapError(err, "Unmarshaling service binding params")
-		}
+	params, err := opts.ParamFlags.AsParams()
+	if err != nil {
+		return err
 	}
 
 	finder := ServiceInstanceFinder{
