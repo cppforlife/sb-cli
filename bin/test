@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e -x
+
+go fmt github.com/cppforlife/sb-cli/...
+
+mkdir -p out
+go build -o out/sb-cli github.com/cppforlife/sb-cli
