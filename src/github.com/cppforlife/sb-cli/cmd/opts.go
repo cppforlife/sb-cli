@@ -29,6 +29,10 @@ type SBOpts struct {
 
 	CreateServiceBinding CreateServiceBindingOpts `command:"create-service-binding" alias:"csb" description:"Create service binding"`
 	DeleteServiceBinding DeleteServiceBindingOpts `command:"delete-service-binding" alias:"dsb" description:"Delete service binding"`
+
+	XDeploy      XDeployOpts      `command:"x-deploy"                    description:"Deploy with dependencies"`
+	XDelete      XDeleteOpts      `command:"x-delete"                    description:"Delete with dependencies"`
+	XInterpolate XInterpolateOpts `command:"x-interpolate" alias:"x-int" description:"Interpolate with dependencies"`
 }
 
 type HelpOpts struct {
@@ -121,6 +125,39 @@ type DeleteServiceBindingOpts struct {
 type DeleteServiceBindingArgs struct {
 	ID                string `positional-arg-name:"SERVICE-BINDING-ID"  description:"Service binding ID"`
 	ServiceInstanceID string `positional-arg-name:"SERVICE-INSTANCE-ID" description:"Service instance ID"`
+}
+
+type XDeployOpts struct {
+	Args      XPositionalArgs `positional-args:"true" required:"true"`
+	ExtraArgs []string
+
+	Deployment string `long:"deployment" short:"d" value-name:"NAME" description:"Deployment group name"`
+
+	cmd
+}
+
+type XDeleteOpts struct {
+	Args      XPositionalArgs `positional-args:"true" required:"true"`
+	ExtraArgs []string
+
+	Deployment string `long:"deployment" short:"d" value-name:"NAME" description:"Deployment group name"`
+
+	cmd
+}
+
+type XInterpolateOpts struct {
+	Args      XPositionalArgs `positional-args:"true" required:"true"`
+	ExtraArgs []string
+
+	Deployment string `long:"deployment" short:"d" value-name:"NAME" description:"Deployment group name"`
+	// todo dump optionally into directory?
+
+	cmd
+}
+
+type XPositionalArgs struct {
+	// todo required deployment name?
+	ManifestPath string `positional-arg-name:"MANIFEST-PATH" description:"Manifest path"`
 }
 
 // MessageOpts is used for version and help flags

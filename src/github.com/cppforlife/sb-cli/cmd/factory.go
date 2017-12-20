@@ -44,6 +44,21 @@ func (f Factory) New(args []string) (Cmd, error) {
 			boshOpts.Timeout = opts.Timeout
 		}
 
+		if opts, ok := command.(*XDeployOpts); ok {
+			opts.ExtraArgs = extraArgs
+			extraArgs = []string{}
+		}
+
+		if opts, ok := command.(*XDeleteOpts); ok {
+			opts.ExtraArgs = extraArgs
+			extraArgs = []string{}
+		}
+
+		if opts, ok := command.(*XInterpolateOpts); ok {
+			opts.ExtraArgs = extraArgs
+			extraArgs = []string{}
+		}
+
 		if len(extraArgs) > 0 {
 			errMsg := "Command '%T' does not support extra arguments: %s"
 			return fmt.Errorf(errMsg, command, strings.Join(extraArgs, ", "))
@@ -55,7 +70,7 @@ func (f Factory) New(args []string) (Cmd, error) {
 	}
 
 	goflags.FactoryFunc = func(val interface{}) {
-		// stype := reflect.Indirect(reflect.ValueOf(val))
+		// todo stype := reflect.Indirect(reflect.ValueOf(val))
 		// if stype.Kind() == reflect.Struct {
 		// 	field := stype.FieldByName("FS")
 		// 	if field.IsValid() {

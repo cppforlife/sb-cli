@@ -39,9 +39,15 @@ func (c Cmd) Execute() (cmdErr error) {
 
 	deps := c.deps
 	var client osb.Client
-	if _, ok := c.Opts.(*MessageOpts); !ok {
+
+	switch c.Opts.(type) {
+	case *XDeployOpts:
+	case *XInterpolateOpts:
+	case *MessageOpts:
+	default:
 		client = c.osbClient()
 	}
+
 	catalog := Catalog{client}
 	siFactory := NewServiceInstanceFactory(client, catalog, deps.Time, deps.UI)
 
@@ -66,6 +72,15 @@ func (c Cmd) Execute() (cmdErr error) {
 
 	case *DeleteServiceBindingOpts:
 		return NewDeleteServiceBindingCmd(siFactory).Run(*opts)
+
+	case *XDeployOpts:
+		return NewXDeployCmd(deps.UI, deps.FS).Run(*opts)
+
+	case *XDeleteOpts:
+		return NewXDeleteCmd(deps.UI, deps.FS).Run(*opts)
+
+	case *XInterpolateOpts:
+		return NewXInterpolateCmd(deps.UI, deps.FS).Run(*opts)
 
 	case *MessageOpts:
 		deps.UI.PrintBlock(opts.Message)

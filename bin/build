@@ -1,0 +1,5 @@
+#!/bin/bash
+
+go fmt github.com/cppforlife/sb-cli/...
+
+go build -o out/sb-cli github.com/cppforlife/sb-cli
