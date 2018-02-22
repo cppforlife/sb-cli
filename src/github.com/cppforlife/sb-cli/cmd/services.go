@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 
 	boshui "github.com/cloudfoundry/bosh-cli/ui"
@@ -26,11 +25,6 @@ func (c ServicesCmd) Run() error {
 		Header: []boshtbl.Header{
 			boshtbl.NewHeader("ID"),
 			boshtbl.NewHeader("Name"),
-			boshtbl.NewHeader("Description"),
-			boshtbl.NewHeader("Tags"),
-			boshtbl.NewHeader("Requires"),
-			boshtbl.NewHeader("Bindable"),
-			boshtbl.NewHeader("Metadata"),
 			boshtbl.NewHeader("Plans"),
 		},
 
@@ -46,11 +40,6 @@ func (c ServicesCmd) Run() error {
 		table.Rows = append(table.Rows, []boshtbl.Value{
 			boshtbl.NewValueString(serv.ID),
 			boshtbl.NewValueString(serv.Name),
-			boshtbl.NewValueString(serv.Description),
-			boshtbl.NewValueStrings(serv.Tags),
-			boshtbl.NewValueStrings(serv.Requires),
-			boshtbl.NewValueBool(serv.Bindable),
-			boshtbl.NewValueInterface(serv.Metadata),
 			boshtbl.NewValueString(c.plansTableStr(serv.Plans)),
 		})
 	}
@@ -65,31 +54,17 @@ func (c ServicesCmd) plansTableStr(plans []osb.Plan) string {
 		Header: []boshtbl.Header{
 			boshtbl.NewHeader("ID"),
 			boshtbl.NewHeader("Name"),
-			boshtbl.NewHeader("Description"),
-			boshtbl.NewHeader("Free"),
 			boshtbl.NewHeader("Bindable"),
-			boshtbl.NewHeader("Metadata"),
-			boshtbl.NewHeader("Instance Create Schema"),
-			boshtbl.NewHeader("Instance Update Schema"),
-			boshtbl.NewHeader("Binding Create Schema"),
 		},
 
-		Transpose: true,
+		// Transpose: true,
 	}
 
 	for _, plan := range plans {
-		view := planView{plan}
-
 		table.Rows = append(table.Rows, []boshtbl.Value{
 			boshtbl.NewValueString(plan.ID),
 			boshtbl.NewValueString(plan.Name),
-			boshtbl.NewValueString(plan.Description),
-			ValueBoolOptional{plan.Free},
 			ValueBoolOptional{plan.Bindable},
-			boshtbl.NewValueInterface(plan.Metadata),
-			boshtbl.NewValueInterface(view.InstanceCreateSchema()),
-			boshtbl.NewValueInterface(view.InstanceUpdateSchema()),
-			boshtbl.NewValueInterface(view.BindingCreateSchema()),
 		})
 	}
 
@@ -98,15 +73,3 @@ func (c ServicesCmd) plansTableStr(plans []osb.Plan) string {
 
 	return strings.Trim(buf.String(), "\n")
 }
-
-type ValueBoolOptional struct{ B *bool }
-
-func (t ValueBoolOptional) String() string {
-	if t.B == nil {
-		return ""
-	}
-	return fmt.Sprintf("%t", *t.B)
-}
-
-func (t ValueBoolOptional) Value() boshtbl.Value            { return t }
-func (t ValueBoolOptional) Compare(other boshtbl.Value) int { panic("unreachable") }

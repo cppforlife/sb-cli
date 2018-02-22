@@ -21,6 +21,7 @@ type SBOpts struct {
 	Timeout  time.Duration `long:"broker-timeout"  value-name:"DURATION" description:"Timeout for individual HTTP requests" default:"30s"`
 
 	Services ServicesOpts `command:"services" alias:"ss" description:"List services"`
+	Service  ServiceOpts  `command:"service"  alias:"s"  description:"Show service"`
 
 	ServiceInstances      ServiceInstancesOpts      `command:"service-instances"       alias:"sis" description:"List service instances"`
 	CreateServiceInstance CreateServiceInstanceOpts `command:"create-service-instance" alias:"csi" description:"Create service instance"`
@@ -37,6 +38,15 @@ type HelpOpts struct {
 
 type ServicesOpts struct {
 	cmd
+}
+
+type ServiceOpts struct {
+	Args ServiceArgs `positional-args:"true" required:"true"`
+	cmd
+}
+
+type ServiceArgs struct {
+	ID string `positional-arg-name:"SERVICE-ID" description:"Service ID or name"`
 }
 
 type ServiceInstancesOpts struct {

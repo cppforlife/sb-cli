@@ -49,6 +49,9 @@ func (c Cmd) Execute() (cmdErr error) {
 	case *ServicesOpts:
 		return NewServicesCmd(catalog, deps.UI).Run()
 
+	case *ServiceOpts:
+		return NewServiceCmd(catalog, deps.UI).Run(*opts)
+
 	case *ServiceInstancesOpts:
 		return NewServiceInstancesCmd(siFactory, deps.UI).Run()
 
